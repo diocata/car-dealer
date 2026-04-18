@@ -1,4 +1,6 @@
 import type { Metadata } from 'next';
+import { availableVehicleCount, sampleVehicles } from '@/features/vehicles';
+import { formatCurrency, formatNumber } from '@/lib/utils';
 import styles from './page.module.css';
 
 export const metadata: Metadata = {
@@ -6,43 +8,95 @@ export const metadata: Metadata = {
   description: 'Explore our full inventory of premium vehicles. Filter by make, model, price, and more.',
 };
 
+const statusLabels = {
+  available: 'Available',
+  reserved: 'Reserved',
+  sold: 'Sold',
+} as const;
+
+function formatLabel(value: string) {
+  return value
+    .split('-')
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(' ');
+}
+
 export default function VehiclesPage() {
+  const prices = sampleVehicles.map((vehicle) => vehicle.price);
+  const minPrice = Math.min(...prices);
+  const maxPrice = Math.max(...prices);
+
   return (
     <div className={styles.page}>
       <header className={styles.header}>
         <h1>Our Vehicles</h1>
         <p className={styles.subtitle}>
-          Browse our curated selection of quality vehicles
+          Browse {sampleVehicles.length} curated vehicles, including{' '}
+          {availableVehicleCount} ready for immediate reservation.
         </p>
       </header>
 
       <div className={styles.layout}>
-        {/* Sidebar filters — will be wired to Zustand store */}
         <aside className={styles.sidebar}>
           <div className={styles.filterGroup}>
-            <h3 className={styles.filterTitle}>Filters</h3>
-            <p className={styles.placeholder}>Filter components will live here. 
-              They&apos;ll connect to the vehicles Zustand store.</p>
+            <h2 className={styles.filterTitle}>Inventory Snapshot</h2>
+            <dl className={styles.inventoryStats}>
+              <div>
+                <dt>Total vehicles</dt>
+                <dd>{sampleVehicles.length}</dd>
+              </div>
+              <div>
+                <dt>Available now</dt>
+                <dd>{availableVehicleCount}</dd>
+              </div>
+              <div>
+                <dt>Price range</dt>
+                <dd>
+                  {formatCurrency(minPrice)} - {formatCurrency(maxPrice)}
+                </dd>
+              </div>
+            </dl>
           </div>
         </aside>
 
-        {/* Vehicle grid */}
         <section className={styles.grid}>
-          {/* Placeholder cards */}
-          {Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} className={styles.vehicleCard}>
+          {sampleVehicles.map((vehicle) => (
+            <article key={vehicle.id} className={styles.vehicleCard}>
               <div className={styles.imagePlaceholder}>
-                <span>🚗</span>
+                <span aria-hidden="true">{vehicle.make.charAt(0)}</span>
               </div>
               <div className={styles.cardBody}>
-                <h3 className={styles.cardTitle}>Vehicle {i + 1}</h3>
-                <p className={styles.cardMeta}>2024 · Automatic · Gasoline</p>
+                <div className={styles.cardHeader}>
+                  <h2 className={styles.cardTitle}>
+                    {vehicle.year} {vehicle.make} {vehicle.model}
+                  </h2>
+                  <span
+                    className={`${styles.badge} ${styles[vehicle.status]}`}
+                  >
+                    {statusLabels[vehicle.status]}
+                  </span>
+                </div>
+                <p className={styles.cardMeta}>
+                  {formatLabel(vehicle.bodyType)} |{' '}
+                  {formatLabel(vehicle.transmission)} |{' '}
+                  {formatLabel(vehicle.fuelType)}
+                </p>
+                <p className={styles.description}>{vehicle.description}</p>
+                <div className={styles.featureList}>
+                  {vehicle.features.slice(0, 2).map((feature) => (
+                    <span key={feature}>{feature}</span>
+                  ))}
+                </div>
                 <div className={styles.cardFooter}>
-                  <span className={styles.price}>€29,990</span>
-                  <span className={styles.badge}>Available</span>
+                  <span className={styles.price}>
+                    {formatCurrency(vehicle.price)}
+                  </span>
+                  <span className={styles.mileage}>
+                    {formatNumber(vehicle.mileage)} km
+                  </span>
                 </div>
               </div>
-            </div>
+            </article>
           ))}
         </section>
       </div>
