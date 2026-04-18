@@ -1,66 +1,73 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+import Link from 'next/link';
+import styles from './page.module.css';
 
-export default function Home() {
+export default function HomePage() {
   return (
     <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className={styles.intro}>
-          <h1>To get started, edit the page.tsx file.</h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
+      {/* ── Hero Section ──────────────────────── */}
+      <section className={styles.hero}>
+        <div className={styles.heroOverlay} />
+        <div className={styles.heroContent}>
+          <span className={styles.badge}>🏆 #1 Trusted Dealership</span>
+          <h1 className={styles.heroTitle}>
+            Find Your <span className={styles.gradient}>Perfect Drive</span>
+          </h1>
+          <p className={styles.heroSubtitle}>
+            Explore our curated collection of premium vehicles.
+            Quality you can trust, prices you&apos;ll love.
           </p>
+          <div className={styles.heroCtas}>
+            <Link href="/vehicles" className={styles.ctaPrimary}>
+              Browse Vehicles
+            </Link>
+            <Link href="#features" className={styles.ctaSecondary}>
+              Learn More
+            </Link>
+          </div>
         </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+        {/* Animated stats bar */}
+        <div className={styles.statsBar}>
+          <div className={styles.stat}>
+            <span className={styles.statValue}>500+</span>
+            <span className={styles.statLabel}>Vehicles</span>
+          </div>
+          <div className={styles.stat}>
+            <span className={styles.statValue}>98%</span>
+            <span className={styles.statLabel}>Satisfaction</span>
+          </div>
+          <div className={styles.stat}>
+            <span className={styles.statValue}>15+</span>
+            <span className={styles.statLabel}>Years</span>
+          </div>
+          <div className={styles.stat}>
+            <span className={styles.statValue}>24/7</span>
+            <span className={styles.statLabel}>Support</span>
+          </div>
         </div>
-      </main>
+      </section>
+
+      {/* ── Features Section ──────────────────── */}
+      <section id="features" className={styles.features}>
+        <h2 className={styles.sectionTitle}>Why AutoElite?</h2>
+        <p className={styles.sectionSub}>
+          We make car buying effortless, transparent, and enjoyable.
+        </p>
+        <div className={styles.featureGrid}>
+          {[
+            { icon: '🔍', title: 'Smart Search', desc: 'Filter by make, model, price, fuel type and more.' },
+            { icon: '🛡️', title: 'Certified Quality', desc: 'Every vehicle passes a rigorous 150-point inspection.' },
+            { icon: '💰', title: 'Best Pricing', desc: 'Market-competitive prices with flexible financing options.' },
+            { icon: '🚀', title: 'Fast Delivery', desc: 'Reserve online and get your car delivered to your door.' },
+          ].map((feature) => (
+            <div key={feature.title} className={styles.featureCard}>
+              <span className={styles.featureIcon}>{feature.icon}</span>
+              <h3>{feature.title}</h3>
+              <p>{feature.desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
     </div>
   );
 }
